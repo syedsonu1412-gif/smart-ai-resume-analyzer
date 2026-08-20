@@ -5,6 +5,7 @@ import ResumeAnalyzer from './pages/ResumeAnalyzer'
 import JobMatching from './pages/JobMatching'
 import JobTracker from './pages/JobTracker'
 import Dashboard from './pages/Dashboard'
+
 import './App.css'
 
 function App() {
@@ -18,79 +19,24 @@ function App() {
   }
 
   // Logout
-  const handleLogout = async () => {
-    try {
-      // Delete latest resume
-      const resumeResponse = await fetch(
-        'http://127.0.0.1:8000/api/resume/latest',
-        {
-          method: 'DELETE',
-        }
-      )
-
-      const resumeData = await resumeResponse.json()
-
-      console.log(
-        'Resume cleanup:',
-        resumeData
-      )
-
-      // Delete all job applications
-      const applicationResponse = await fetch(
-        'http://127.0.0.1:8000/api/applications/',
-        {
-          method: 'DELETE',
-        }
-      )
-
-      const applicationData =
-        await applicationResponse.json()
-
-      console.log(
-        'Application cleanup:',
-        applicationData
-      )
-
-      // Clear saved Job Match score
-      localStorage.removeItem(
-        'latestMatchScore'
-      )
-
-    } catch (error) {
-      console.error(
-        'Logout cleanup error:',
-        error
-      )
-    }
-
-    // Logout
+  const handleLogout = () => {
     setLoggedIn(false)
-
-    // Reset page
     setPage('dashboard')
   }
 
-  // Show Login when logged out
+  // Show Login
   if (!loggedIn) {
-    return (
-      <Login onLogin={handleLogin} />
-    )
+    return <Login onLogin={handleLogin} />
   }
 
   // Common layout
   const commonLayout = (children) => (
     <div className="app">
-
-      <button
-        onClick={() =>
-          setPage('dashboard')
-        }
-      >
+      <button onClick={() => setPage('dashboard')}>
         ← Back to Dashboard
       </button>
 
       {children}
-
     </div>
   )
 
