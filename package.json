@@ -1,0 +1,13 @@
+{
+  "name": "smart-ai-resume-analyzer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && .\\venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+    "frontend": "cd frontend && npm run dev -- --open"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
