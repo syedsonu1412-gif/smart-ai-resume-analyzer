@@ -8,7 +8,7 @@ function JobTracker() {
   useEffect(() => {
     let ignore = false
 
-    const loadApplications = async () => {
+    const fetchApplications = async () => {
       try {
         const response = await fetch(
           'http://127.0.0.1:8000/api/applications/'
@@ -21,7 +21,9 @@ function JobTracker() {
         }
 
         if (!ignore) {
-          setApplications(Array.isArray(data) ? data : [data])
+          setApplications(
+            Array.isArray(data) ? data : data.applications || []
+          )
         }
       } catch (err) {
         if (!ignore) {
@@ -34,29 +36,29 @@ function JobTracker() {
       }
     }
 
-    loadApplications()
+    fetchApplications()
 
     return () => {
       ignore = true
     }
   }, [])
 
+  if (loading) {
+    return <h2>Loading applications...</h2>
+  }
+
   return (
     <div className="job-tracker">
       <h1>📋 Job Tracker</h1>
 
-      <p>Track your job applications and their status.</p>
-
-      {loading && <p>Loading applications...</p>}
-
       {error && <p>{error}</p>}
 
-      {!loading && !error && applications.length === 0 && (
-        <p>No job applications found.</p>
+      {!error && applications.length === 0 && (
+        <p>No applications found.</p>
       )}
 
-      {!loading && !error && applications.length > 0 && (
-        <div className="applications">
+      {applications.length > 0 && (
+        <div>
           {applications.map((application) => (
             <div className="application-card" key={application.id}>
               <h2>{application.company}</h2>
@@ -74,15 +76,9 @@ function JobTracker() {
               </p>
 
               <p>
-                <strong>Applied:</strong>{' '}
+                <strong>Applied Date:</strong>{' '}
                 {application.applied_date}
               </p>
-
-              {application.notes && (
-                <p>
-                  <strong>Notes:</strong> {application.notes}
-                </p>
-              )}
 
               {application.job_url && (
                 <a
@@ -92,6 +88,12 @@ function JobTracker() {
                 >
                   View Job
                 </a>
+              )}
+
+              {application.notes && (
+                <p>
+                  <strong>Notes:</strong> {application.notes}
+                </p>
               )}
             </div>
           ))}
